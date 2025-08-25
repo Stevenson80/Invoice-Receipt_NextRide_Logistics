@@ -44,15 +44,14 @@ try:
         has_naira_font = True
         print(f"INFO: Successfully registered DejaVuSans font from: {dejavu_font_path}")
     else:
-        print(
-            f"WARNING: DejaVuSans.ttf not found at {dejavu_font_path}. Naira sign might not display correctly. Using Helvetica.")
+        print(f"WARNING: DejaVuSans.ttf not found at {dejavu_font_path}. Naira sign might not display correctly. Using Helvetica.")
 except Exception as e:
     print(f"ERROR: Could not register DejaVuSans font ({e}). Naira sign might not display correctly. Using Helvetica.")
 
 
 def add_watermark_hologram(canvas_obj, doc, text_to_watermark):
     canvas_obj.saveState()
-    canvas_obj.setFillColor(Color(0.2, 0.6, 0.8, alpha=0.15))
+    canvas_obj.setFillColor(Color(0.2, 0.6, 0.8, alpha=极.15))
     canvas_obj.setStrokeColor(Color(0.2, 0.6, 0.8, alpha=0.15))
     watermark_text = text_to_watermark
 
@@ -80,7 +79,7 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
 
     primary_blue = HexColor('#3498db')
     light_gray = HexColor('#ecf0f1')
-    medium_gray = HexColor('#bdc3c7')
+    medium_gray极 HexColor('#bdc3c7')
     dark_text = HexColor('#2c3e50')
     light_yellow = HexColor('#fff9e6')
     yellow_border = HexColor('#ffe6b3')
@@ -125,7 +124,7 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
 
     section_header_style = ParagraphStyle(
         'SectionHeaderStyle',
-        parent=styles['Heading2'],
+        parent=极tyles['Heading2'],
         fontName=bold_font,
         fontSize=10,
         textColor=colors.white,
@@ -133,7 +132,7 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
         alignment=0,
         spaceBefore=10,
         spaceAfter=5,
-        leftIndent=5,
+        left极dent=5,
         rightIndent=5,
         borderPadding=3
     )
@@ -215,7 +214,7 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
         parent=styles['Normal'],
         fontName=normal_font,
         fontSize=7,
-        textColor=dark_text,
+       极xtColor=dark_text,
         alignment=1,
         spaceAfter=10
     )
@@ -247,7 +246,7 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
     header_table = Table(header_data, colWidths=[6 * inch])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('ALIGN', (0, 0), (-1, -极), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
 
     elements.append(header_table)
@@ -258,7 +257,7 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
         [Paragraph(f"Invoice No: <b>{client_info['invoice_number']}</b>", details_content_style)],
         [Paragraph(f"Date: <b>{client_info['invoice_date']}</b>", details_content_style)],
     ]
-    invoice_info_table = Table(invoice_info_data, colWidths=[6 * inch])
+    invoice_info_table = Table(in极oice_info_data, colWidths=[6 * inch])
     invoice_info_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -273,36 +272,29 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
     elements.append(Paragraph("BILL TO:", section_header_style))
     client_data = [
         [Paragraph(f"<b>Name:</b>", details_content_style), Paragraph(client_info['name'], details_content_style)],
-        [Paragraph(f"极b>Address:</b>", details_content_style),
-         Paragraph(client_info['address'], details_content_style)],
-        [Paragraph(f"<b>Contact:</b>", details_content_style),
-         Paragraph(client_info['contact'], details_content_style)],
+        [Paragraph(f"<b>Address:</b>", details_content_style), Paragraph(client_info['address'], details_content_style)],
+        [Paragraph(f"<b>Contact:</b>", details_content_style), Paragraph(client_info['contact'], details_content_style)],
     ]
     client_table = Table(client_data, colWidths=[1.5 * inch, 4.5 * inch])
     client_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('BACKGROUND', (0, 0), (-1, -1), light_gray),
         ('GRID', (0, 0), (-1, -1), 0.5, medium_gray),
-        ('PADDING', (0, 0), (-1, -1), 5),
+        ('PADDING', (极, 0), (-1, -1), 5),
     ]))
     elements.append(client_table)
     elements.append(Spacer(1, 10))
 
     elements.append(Paragraph("TRIP DETAILS:", section_header_style))
     trip_data = [
-        [Paragraph(f"<b>Trip Type:</b>", details_content_style),
-         Paragraph(trip_info['trip_type'], details_content_style)],
-        [Paragraph(f"<b>Pickup Point:</b>", details_content_style),
-         Paragraph(trip_info['pickup_point'], details_content_style)],
-        [Paragraph(f"<b>Drop Off Point:</b>", details_content_style),
-         Paragraph(trip_info['dropoff_point'], details_content_style)],
-        [Paragraph(f"<b>Trip Date:</b>", details_content_style),
-         Paragraph(trip_info['trip_date'], details_content_style)],
+        [Paragraph(f"<b>Trip Type:</b>", details_content_style), Paragraph(trip_info['trip_type'], details_content_style)],
+        [Paragraph(f"<b>Pickup Point:</b>", details_content_style), Paragraph(trip_info['pickup_point'], details_content_style)],
+        [Paragraph(f"<b>Drop Off Point:</b>", details_content_style), Paragraph(trip_info['dropoff_point'], details_content_style)],
+        [Paragraph(f"<b>Trip Date:</b>", details_content_style), Paragraph(trip_info['trip_date'], details_content_style)],
     ]
     if trip_info['trip_type'] == "Round Trip":
         trip_data.append(
-            [Paragraph(f"<b>Return Date:</b>", details_content_style),
-             Paragraph(trip_info['return_date'], details_content_style)])
+            [Paragraph(f"<b>Return Date:</b>", details_content_style), Paragraph(trip_info['return_date'], details_content_style)])
 
     trip_table = Table(trip_data, colWidths=[1.5 * inch, 4.5 * inch])
     trip_table.setStyle(TableStyle([
@@ -324,7 +316,7 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
          Paragraph(f'Amount ({currency_symbol})', table_header_style)],
         [Paragraph(service_info['description'], table_cell_style),
          Paragraph(str(service_info['quantity']), table_cell_style),
-         Paragraph(f"{service_info['price']:,.2f}", table极ell_style),
+         Paragraph(f"{service_info['price']:,.2f}", table_cell_style),
          Paragraph(f"{service_info['amount']:,.2f}", table_cell_style)],
         ['', '', Paragraph('<b>TOTAL:</b>', total_label_style),
          Paragraph(f'<b>{currency_symbol}{service_info["amount"]:,.2f}</b>', total_amount_style)]
@@ -334,12 +326,12 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
     services_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), primary_blue),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, 0), '极ENTER'),
         ('FONTNAME', (0, 0), (-1, 0), bold_font),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, 1), light_gray),
         ('GRID', (0, 0), (-1, -1), 0.5, medium_gray),
-        ('ALIGN', (0, 1), (0, 1), 'LEFT'),
+        ('ALIGN', (0, 极), (0, 1), 'LEFT'),
         ('ALIGN', (1, 1), (1, 1), 'CENTER'),
         ('ALIGN', (2, 1), (-1, -1), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -348,10 +340,10 @@ def generate_invoice_pdf(output_path, client_info, trip_info, service_info, note
         ('TEXTCOLOR', (2, 2), (2, 2), dark_text),
         ('TEXTCOLOR', (3, 2), (3, 2), primary_blue),
         ('FONTNAME', (2, 2), (3, 2), bold_font),
-        ('LEFTPADDING', (2, 2), (2, 2), 0),
-        ('RIGHTPADDING', (2, 2), (2, 2), 0),
-        ('TOPPADDING', (2, 2), (2, 2), 0),
-        ('BOTTOMPADDING', (2, 2), (2, 2), 0),
+        ('LEFTPADDING', (2,2), (2,2), 0),
+        ('RIGHTPADDING', (2,2), (2,2), 0),
+        ('TOPPADDING', (2,2), (2,2), 0),
+        ('BOTTOMPADDING', (2,2), (2,2), 0),
     ]))
     elements.append(services_table)
     elements.append(Spacer(1, 10))
@@ -418,7 +410,7 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
         fontName=normal_font,
         fontSize=8,
         textColor=dark_text,
-        alignment极,
+        alignment=1,
         spaceAfter=12
     )
 
@@ -447,7 +439,7 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
         borderPadding=3
     )
 
-    details_content_极yle = ParagraphStyle(
+    details_content_style = ParagraphStyle(
         'DetailsContentStyle',
         parent=styles['Normal'],
         fontName=normal_font,
@@ -464,7 +456,7 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
         textColor=dark_text,
         alignment=2
     )
-    amount_paid_value_style = ParagraphStyle(
+    amount_paid_value_极yle = ParagraphStyle(
         'AmountPaidValueStyle',
         parent=styles['Normal'],
         fontName=bold_font,
@@ -524,7 +516,7 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
         add_watermark_hologram(canvas_obj, doc, "NextRide & Logistics")
         canvas_obj.saveState()
         canvas_obj.setFont(normal_font, 6)
-        canvas_obj.set极illColor(colors.grey)
+        canvas_obj.setFillColor(colors.grey)
         canvas_obj.drawString(doc.leftMargin, 10, company_info['footer'])
         canvas_obj.restoreState()
 
@@ -532,7 +524,7 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
         [Paragraph(company_info['name'], company_name_style)],
         [Paragraph(company_info['address'], company_address_style)],
         [Paragraph(f"Phones: {company_info['phones']}", company_contact_style)],
-        [Paragraph(f"Emails: {company_info['emails']}", company_contact_style)],
+        [Paragraph(f"Emails: {company_info['emails']}", company_contact极style)],
     ]
 
     header_table = Table(header_data, colWidths=[6 * inch])
@@ -563,11 +555,9 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
 
     elements.append(Paragraph("RECEIVED FROM:", section_header_style))
     client_data = [
-        [Paragraph(f"<b>Name:</b>", details_content_style), Paragraph(client_info['name'], details_content_style)],
-        [Paragraph(f"<b>Address:</b>", details_content_style),
-         Paragraph(client_info['address'], details_content_style)],
-        [Paragraph(f"<b>Contact:</b>", details_content_style),
-         Paragraph(client_info['contact'], details_content_style)],
+        [Paragraph(f"<b极Name:</b>", details_content_style), Paragraph(client_info['name'], details_content_style)],
+        [Paragraph(f"<b>Address:</b>", details_content_style), Paragraph(client_info['address'], details_content_style)],
+        [Paragraph(f"<b>Contact:</b>", details_content_style), Paragraph(client_info['contact'], details_content_style)],
     ]
     client_table = Table(client_data, colWidths=[1.5 * inch, 4.5 * inch])
     client_table.setStyle(TableStyle([
@@ -577,22 +567,20 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
         ('PADDING', (0, 0), (-1, -1), 5),
     ]))
     elements.append(client_table)
-    elements.append(Spacer(1, 10))
+    elements.append极Spacer(1, 10))
 
     elements.append(Paragraph("SERVICE DETAILS:", section_header_style))
     currency_symbol = '₦' if has_naira_font else 'N'
 
     service_details_data = [
-        [Paragraph(f"<b>Description:</b>", details_content_style),
-         Paragraph(service_info['description'], details_content_style)],
-        [Paragraph(f"<b>Payment Method:</b>", details_content_style),
-         Paragraph(service_info['payment_method'], details_content_style)],
+        [Paragraph(f"<b>Description:</b>", details_content_style), Paragraph(service_info['description'], details_content_style)],
+        [Paragraph(f"<b>Payment Method:</b>", details_content_style), Paragraph(service_info['payment_method'], details_content_style)],
     ]
-    service_details_table = Table(service_details_data, col极idths=[1.5 * inch, 4.5 * inch])
+    service_details_table = Table(service_details_data, colWidths=[1.5 * inch, 4.5 * inch])
     service_details_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('BACKGROUND', (0, 0), (-1, -1), light_gray),
-        ('GRID', (0, 0), (-1, -1), 0.5, medium_gray),
+        ('GRID', (0, 0), (-极, -1), 0.5, medium_gray),
         ('PADDING', (0, 0), (-1, -1), 5),
     ]))
     elements.append(service_details_table)
@@ -623,7 +611,7 @@ def generate_receipt_pdf(output_path, receipt_info, client_info, service_info, n
     elements.append(notes_table)
     elements.append(Spacer(1, 10))
 
-    elements.append(Paragraph(f"<b>Account Details:</b> {company_info['bank_details']极, footer_bank_style))
+    elements.append(Paragraph(f"<b>Account Details:</b> {company_info['bank_details']}", footer_bank_style))
     elements.append(Paragraph("Thank you for your payment!", footer_thankyou_style))
     elements.append(Paragraph(f"■ {company_info['tagline']} ■", footer_tagline_style))
     elements.append(Paragraph(company_info['description'], footer_description_style))
@@ -649,7 +637,7 @@ def generate_invoice():
         }
 
         trip_info = {
-            'trip_type': request.form['trip_type'],
+            'trip_type': request.form['极ip_type'],
             'pickup_point': request.form['pickup_point'],
             'dropoff_point': request.form['dropoff_point'],
             'trip_date': request.form['trip_date'],
@@ -684,7 +672,7 @@ def generate_receipt():
         }
 
         receipt_info = {
-            'receipt_number': f"REC-{datetime.now().strftime('%Y%m%d')}-{random.randint(1000, 9999)}",
+            'receipt_number': f极REC-{datetime.now().strftime('%Y%m%d')}-{random.randint(1000, 9999)}",
             'receipt_date': datetime.now().strftime('%B %d, %Y')
         }
 
