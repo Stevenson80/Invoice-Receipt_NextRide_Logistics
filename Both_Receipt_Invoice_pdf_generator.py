@@ -3,21 +3,20 @@ import random
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
-from reportlab.lib.colors import HexColor
+from reportlab.lib.colors import HexColor, Color
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.colors import Color
 
 
 class HeadlessPDFGenerator:
     def __init__(self):
         self.company_info = {
             'name': 'NextRide & Logistics',
-            'address': 'No 29 Amoda Alli Street, Millennium Estate, Gbagada, Lagos. Nigeria',
+            'address': 'No 29 Amoda Alli Street, Millennium Estate, Gbagada, Lagos, Nigeria',
             'phones': '08023428564 or 08128859763',
             'emails': 'nextflight77@gmail.com, janeagboola@yahoo.com',
             'tagline': 'Safety. Luxury. Value for Your Money.',
@@ -26,14 +25,16 @@ class HeadlessPDFGenerator:
             'bank_details': 'Bank: Sterling Bank | Account No: 0123186628'
         }
 
-        self.logo_path = None
-        self.signature_path = None
+        self.logo_path = 'static/logo.png'  # Default permanent logo path
+        self.signature_path = 'static/signature.png'  # Default permanent signature path
         self.naira_font_name = 'Helvetica'
-        self.has_naira_font = False  # always use 'N'
+        self.has_naira_font = False  # Always use 'N'
 
     def set_paths(self, logo_path=None, signature_path=None):
-        self.logo_path = logo_path
-        self.signature_path = signature_path
+        if logo_path and os.path.exists(logo_path):
+            self.logo_path = logo_path
+        if signature_path and os.path.exists(signature_path):
+            self.signature_path = signature_path
 
     def add_watermark_hologram(self, canvas_obj, doc, text_to_watermark):
         canvas_obj.saveState()
@@ -51,8 +52,8 @@ class HeadlessPDFGenerator:
 
     def generate_invoice_pdf(self, output_path, client_info, trip_info, service_info, notes):
         doc = SimpleDocTemplate(output_path, pagesize=A4,
-                                rightMargin=15, leftMargin=15,
-                                topMargin=15, bottomMargin=15)
+                                rightMargin=12, leftMargin=12,  # Reduced margins for mobile
+                                topMargin=12, bottomMargin=12)
         elements = []
         styles = getSampleStyleSheet()
 
@@ -66,30 +67,42 @@ class HeadlessPDFGenerator:
         light_yellow = HexColor('#fff9e6')
         yellow_border = HexColor('#ffe6b3')
 
-        # --- Styles ---
+        # --- Styles (reduced for mobile readability) ---
         company_name_style = ParagraphStyle('CompanyNameStyle', parent=styles['Normal'],
-                                            fontName=bold_font, fontSize=18,
-                                            textColor=primary_blue, alignment=1, spaceAfter=6)
+                                           fontName=bold_font, fontSize=16,  # Reduced from 18
+                                           textColor=primary_blue, alignment=0, spaceAfter=2)  # Left-aligned
         company_address_style = ParagraphStyle('CompanyAddressStyle', parent=styles['Normal'],
-                                               fontName=normal_font, fontSize=8,
-                                               textColor=dark_text, alignment=1, spaceAfter=2)
+                                              fontName=normal_font, fontSize=7,  # Reduced from 8
+                                              textColor=dark_text, alignment=0, spaceAfter=2)
         company_contact_style = ParagraphStyle('CompanyContactStyle', parent=styles['Normal'],
-                                               fontName=normal_font, fontSize=8,
-                                               textColor=dark_text, alignment=1, spaceAfter=12)
+                                              fontName=normal_font, fontSize=7,  # Reduced from 8
+                                              textColor=dark_text, alignment=0, spaceAfter=4)
 
         invoice_title_style = ParagraphStyle('InvoiceTitleStyle', parent=styles['Heading1'],
-                                             fontName=bold_font, fontSize=24,
-                                             textColor=primary_blue, alignment=1, spaceAfter=20)
+                                            fontName=bold_font, fontSize=20,  # Reduced from 24
+                                            textColor=primary_blue, alignment=1, spaceAfter=15)  # Reduced from 20
         section_header_style = ParagraphStyle('SectionHeaderStyle', parent=styles['Heading2'],
-                                              fontName=bold_font, fontSize=10,
-                                              textColor=colors.white, backColor=primary_blue,
-                                              alignment=0, spaceBefore=10, spaceAfter=5,
-                                              leftIndent=5, rightIndent=5, borderPadding=3)
+                                             fontName=bold_font, fontSize=10,
+                                             textColor=colors.white, backColor=primary_blue,
+                                             alignment=0, spaceBefore=8, spaceAfter=4,  # Reduced spacing
+                                             leftIndent=5, rightIndent=5, borderPadding=3)
         details_content_style = ParagraphStyle('DetailsContentStyle', parent=styles['Normal'],
-                                               fontName=normal_font, fontSize=9,
-                                               textColor=dark_text, spaceAfter=2)
+                                              fontName=normal_font, fontSize=8,  # Reduced from 9
+                                              textColor=dark_text, spaceAfter=2)
+        table_header_style = ParagraphStyle('TableHeaderStyle', parent=styles['Normal'],
+                                           fontName=bold_font, fontSize=8,  # Reduced from 9
+                                           textColor=colors.white, alignment=1)
+        table_cell_style = ParagraphStyle('TableCellStyle', parent=styles['Normal'],
+                                         fontName=normal_font, fontSize=8,  # Reduced from 9
+                                         textColor=dark_text, alignment=0)
+        total_label_style = ParagraphStyle('TotalLabelStyle', parent=styles['Normal'],
+                                          fontName=bold_font, fontSize=9,  # Reduced from 10
+                                          textColor=dark_text, alignment=2)
+        total_amount_style = ParagraphStyle('TotalAmountStyle', parent=styles['Normal'],
+                                           fontName=bold_font, fontSize=9,  # Reduced from 10
+                                           textColor=primary_blue, alignment=2)
 
-        # header
+        # --- Header with logo on left ---
         header_data = [
             [Paragraph(self.company_info['name'], company_name_style)],
             [Paragraph(self.company_info['address'], company_address_style)],
@@ -100,21 +113,23 @@ class HeadlessPDFGenerator:
         if self.logo_path and os.path.exists(self.logo_path):
             header_table = Table([
                 [Image(self.logo_path, width=1.2 * inch, height=0.6 * inch),
-                 Table(header_data, colWidths=[4.5 * inch])]
-            ], colWidths=[1.5 * inch, 4.5 * inch])
+                 Table(header_data, colWidths=[4.5 * inch], style=TableStyle([
+                     ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                     ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                 ]))]
+            ], colWidths=[1.2 * inch, 4.8 * inch])  # Adjusted for better fit
             header_table.setStyle(TableStyle([
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ('ALIGN', (1, 0), (1, 0), 'CENTER'),
             ]))
         else:
             header_table = Table(header_data, colWidths=[6 * inch])
             header_table.setStyle(TableStyle([
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ]))
         elements.append(header_table)
-        elements.append(Spacer(1, 10))
+        elements.append(Spacer(1, 8))  # Reduced from 10
 
-        # invoice info
+        # --- Invoice Info ---
         invoice_info_data = [
             [Paragraph("INVOICE", invoice_title_style)],
             [Paragraph(f"Invoice No: <b>{client_info['invoice_number']}</b>", details_content_style)],
@@ -125,39 +140,107 @@ class HeadlessPDFGenerator:
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ]))
         elements.append(invoice_info_table)
-        elements.append(Spacer(1, 10))
+        elements.append(Spacer(1, 8))  # Reduced from 10
 
-        # bill to
+        # --- Bill To ---
         elements.append(Paragraph("BILL TO:", section_header_style))
         client_data = [
             [Paragraph("<b>Name:</b>", details_content_style), Paragraph(client_info['name'], details_content_style)],
             [Paragraph("<b>Address:</b>", details_content_style), Paragraph(client_info['address'], details_content_style)],
             [Paragraph("<b>Contact:</b>", details_content_style), Paragraph(client_info['contact'], details_content_style)],
         ]
-        client_table = Table(client_data, colWidths=[1.5 * inch, 4.5 * inch])
+        client_table = Table(client_data, colWidths=[1.2 * inch, 4.8 * inch])  # Reduced from 1.5, 4.5
         client_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), light_gray),
             ('GRID', (0, 0), (-1, -1), 0.5, medium_gray),
+            ('PADDING', (0, 0), (-1, -1), 4),  # Reduced padding
         ]))
         elements.append(client_table)
-        elements.append(Spacer(1, 10))
+        elements.append(Spacer(1, 8))  # Reduced from 10
 
-        # notes
+        # --- Trip Details ---
+        elements.append(Paragraph("TRIP DETAILS:", section_header_style))
+        trip_data = [
+            [Paragraph("<b>Trip Type:</b>", details_content_style), Paragraph(trip_info['trip_type'], details_content_style)],
+            [Paragraph("<b>Pickup Point:</b>", details_content_style), Paragraph(trip_info['pickup_point'], details_content_style)],
+            [Paragraph("<b>Drop Off Point:</b>", details_content_style), Paragraph(trip_info['dropoff_point'], details_content_style)],
+            [Paragraph("<b>Trip Date:</b>", details_content_style), Paragraph(trip_info['trip_date'], details_content_style)],
+        ]
+        if trip_info.get('return_date'):
+            trip_data.append([Paragraph("<b>Return Date:</b>", details_content_style), Paragraph(trip_info['return_date'], details_content_style)])
+        trip_table = Table(trip_data, colWidths=[1.2 * inch, 4.8 * inch])  # Reduced from 1.5, 4.5
+        trip_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), light_gray),
+            ('GRID', (0, 0), (-1, -1), 0.5, medium_gray),
+            ('PADDING', (0, 0), (-1, -1), 4),  # Reduced padding
+        ]))
+        elements.append(trip_table)
+        elements.append(Spacer(1, 8))  # Reduced from 10
+
+        # --- Services ---
+        elements.append(Paragraph("SERVICES:", section_header_style))
+        currency_symbol = 'N'  # Since has_naira_font is False
+        services_data = [
+            [Paragraph('Description', table_header_style),
+             Paragraph('Qty', table_header_style),
+             Paragraph(f'Price ({currency_symbol})', table_header_style),
+             Paragraph(f'Amount ({currency_symbol})', table_header_style)],
+            [Paragraph(service_info['description'], table_cell_style),
+             Paragraph(str(service_info['quantity']), table_cell_style),
+             Paragraph(f"{service_info['price']:,.2f}", table_cell_style),
+             Paragraph(f"{service_info['amount']:,.2f}", table_cell_style)],
+            ['', '', Paragraph('<b>TOTAL:</b>', total_label_style),
+             Paragraph(f'<b>{currency_symbol}{service_info["amount"]:,.2f}</b>', total_amount_style)]
+        ]
+        services_table = Table(services_data, colWidths=[3 * inch, 0.6 * inch, 0.8 * inch, 0.8 * inch])  # Reduced widths
+        services_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), primary_blue),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), bold_font),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 5),  # Reduced from 6
+            ('BACKGROUND', (0, 1), (-1, 1), light_gray),
+            ('GRID', (0, 0), (-1, -1), 0.5, medium_gray),
+            ('ALIGN', (0, 0), (0, 1), 'LEFT'),
+            ('ALIGN', (1, 1), (1, 1), 'CENTER'),
+            ('ALIGN', (2, 1), (-1, -1), 'RIGHT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('SPAN', (0, 2), (1, 2)),
+            ('BACKGROUND', (0, 2), (-1, 2), light_gray),
+            ('TEXTCOLOR', (2, 2), (2, 2), dark_text),
+            ('TEXTCOLOR', (3, 2), (3, 2), primary_blue),
+            ('FONTNAME', (2, 2), (3, 2), bold_font),
+        ]))
+        elements.append(services_table)
+        elements.append(Spacer(1, 8))  # Reduced from 10
+
+        # --- Additional Notes ---
         elements.append(Paragraph("ADDITIONAL NOTES:", section_header_style))
         notes_paragraph = Paragraph(notes, details_content_style)
         notes_table = Table([[notes_paragraph]], colWidths=[6 * inch])
         notes_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), light_yellow),
             ('GRID', (0, 0), (-1, -1), 0.5, yellow_border),
-            ('PADDING', (0, 0), (-1, -1), 5),
+            ('PADDING', (0, 0), (-1, -1), 4),  # Reduced from 5
         ]))
         elements.append(notes_table)
-        elements.append(Spacer(1, 10))
+        elements.append(Spacer(1, 8))  # Reduced from 10
 
-        # build
+        # --- Signature (if available) ---
+        if self.signature_path and os.path.exists(self.signature_path):
+            elements.append(Image(self.signature_path, width=1.8 * inch, height=0.4 * inch))  # Reduced size
+            elements.append(Spacer(1, 6))  # Reduced from 10
+
+        # --- Footer ---
+        elements.append(Paragraph(f"<b>Account Details:</b> {self.company_info['bank_details']}", details_content_style))
+        elements.append(Paragraph("Thank you for your patronage!", details_content_style))
+        elements.append(Paragraph(f"■ {self.company_info['tagline']} ■", details_content_style))
+        elements.append(Paragraph(self.company_info['description'], details_content_style))
+
+        # --- Build PDF ---
         def add_page_elements(canvas_obj, doc):
             self.add_watermark_hologram(canvas_obj, doc, "NextRide & Logistics")
-            canvas_obj.setFont(normal_font, 6)
+            canvas_obj.setFont(normal_font, 5)  # Reduced from 6
             canvas_obj.setFillColor(colors.grey)
             canvas_obj.drawString(doc.leftMargin, 10, self.company_info['footer'])
 
