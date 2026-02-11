@@ -2,4 +2,4 @@ Flask==2.3.3
 reportlab==4.0.4
 Werkzeug==2.3.7
 gunicorn==21.2.0
-Pillow==10.0.0
+Pillow==10.4.0  # Updated from 10.0.0 to support Python 3.13
