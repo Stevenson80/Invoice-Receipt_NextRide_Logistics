@@ -1247,5 +1247,4 @@ if __name__ == '__main__':
     if not os.path.exists(DEFAULT_SIGNATURE_PATH):
         create_placeholder_image(DEFAULT_SIGNATURE_PATH, 300, 100, (250, 230, 230), "AUTHORIZED\nSIGNATURE")
 
-    app.run(debug=True, host='0.0.0.0', port=5000)#   F o r c e   R e n d e r   d e p l o y m e n t   0 2 / 1 1 / 2 0 2 6   1 4 : 3 2 : 2 0  
- 
+    app.run(debug=True, host='0.0.0.0', port=5000)
